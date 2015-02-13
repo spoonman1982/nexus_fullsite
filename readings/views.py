@@ -29,7 +29,7 @@ class DjangoJSONEncoder(JSONEncoder):
 
 
 def hourly_readings_view(request):
-	"""
+
 	if request.user.id:
 		current_device = Device.objects.get(user = request.user.id)
 		hourly_reading_list = HourlyReading.objects.filter(device=current_device)
@@ -37,8 +37,7 @@ def hourly_readings_view(request):
 	        'hourly_reading_list':hourly_reading_list
 	    },context_instance=RequestContext(request))
 	else:
-	"""
-	return render_to_response('readings/hourly_readings.html', {})
+		return render_to_response('readings/hourly_readings.html', {})
 
 def weekly_readings_view(request):
 	return render_to_response('readings/weekly_readings.html', {})
@@ -49,10 +48,11 @@ def monthly_readings_view(request):
 
 
 def hourly_readings_list(request):
-	readings = HourlyReading.objects.all() #(time__range=("2014-10-28T00:00:00", "2014-10-28T05:00:00")) #device = find_device(request.body),
-	response_data={}
-	response_data['objects'] = readings
-	return HttpResponse(json.dumps(readings, cls=DjangoJSONEncoder), content_type="application/json")
+	if request.method == 'POST':
+		response_data={}
+		readings = HourlyReading.objects.filter(device = find_device(request.body), time__range=("2014-10-28T00:00:00", "2014-10-28T12:00:00"))
+		response_data['objects'] = readings
+		return HttpResponse(json.dumps(readings, cls=DjangoJSONEncoder), content_type="application/json")
 
 def weekly_readings_list(request):
 	readings = DailyReading.objects.filter(time__range=("2014-10-05T00:00:00", "2014-10-11T00:00:00")) #device = find_device(request.body),
