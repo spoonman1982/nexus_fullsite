@@ -1,0 +1,18 @@
+{% load staticfiles %}
+<html>
+<head> 
+<title>Nexus Site</title>
+{% load staticfiles %}
+	<script src="{% static "js/jquery.min.js"%}" type="text/javascript" ></script>
+	<script src="{% static "js/guage.js"%}" type="text/javascript" ></script>
+	<script src="{% static "js/highcharts.min.js"%}" type="text/javascript" ></script>
+	<script src="{% static "js/custom.js"%}" type="text/javascript"></script>
+	<link  href="{% static "css/main.css"%}" rel="stylesheet">
+
+</head>
+<body>
+	<h1>Nexus Web Site<h1>
+	{% block content %}
+	{% endblock %}
+</body>
+</html>

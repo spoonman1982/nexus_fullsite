@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block content %}
+<h1>This Works</h1>
+<h2>User API Key: <span></span></h2>
+
+<ul>
+
+</ul>
+<br/><br/>
+
+
+
+<form action="#" id="trial_form">
+		<label for="username">User Name</label>
+		<input type="text" name="username" value="" id="username" /><br/><br/>
+		<label for="password">Password</label>
+		<input type="password" name="password" value="" id="password" /><br/><br/>
+		<input type="submit" value="login" />
+</form>
+	<div id="get_key">
+		<button onclick="loadAPI()">Get Key</button><br/><br/>
+		<button onclick="deleteAPI()">Delete Key</button><br/>
+	</div>
+<script>
+
+
+
+$("#trial_form").submit(function(event) {
+	event.preventDefault();
+		var $form = $(this);
+
+		var f_data = JSON.stringify({
+			"username": $form.find("input[name='username']").val(),
+			"password": $form.find("input[name='password']").val()
+		});
+
+		alert("works so far");
+
+	$.ajax({
+		url: "http://192.168.1.15:8000/accounts/auth/",
+		type: 'POST',
+  		dataType: "json",
+  		contentType: "application/json",
+		data: f_data,
+		success: function(data) {
+		    /* PhonGap Local Storage for mobile device*/
+		    localStorage.setItem("api_key", data.api_key);
+		    localStorage.setItem("username", data.username);
+		    /*Local machine cookies*/
+		    /*setCookie("api_key", data.api_key, 365);
+		    setCookie("username", data.username, 365);*/
+		},
+	});
+});
+
+function loadAPI(){
+	var api_key = localStorage.getItem("api_key");
+	var username = localStorage.getItem("username");
+	alert(username + ": " + api_key);
+}
+
+function deleteAPI(){
+	localStorage.clear();
+}
+
+function openthis(){
+	var api_data = JSON.stringify({"api_key": "empty"});
+		
+		/*"api_key": window.localStorage.getItem("api_key"),*/
+	
+
+	$.ajax({
+	    url: "http://192.168.1.15:8000/hourlyreadingslist/",
+	    type: "POST",
+		contentType: 'application/json',
+		data: api_data,
+	    success: function(data) {
+	    	for(var item = 0; item < data.length; item++ ){
+	    		$("ul").append("<li><h1>"+ data[item].fields.device +"</h1><p>" + 
+				data[item].fields.cost + "</p><p>" + 
+				data[item].fields.kWh + "</p></li>");
+	    	};
+		},
+	});
+};
+
+openthis();
+
+</script>
+{% endblock %}

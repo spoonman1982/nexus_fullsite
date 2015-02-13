@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1>Weekly Readings List</h1>
+
+<ul>
+
+</ul>
+<script>
+
+function openWeekly(){
+
+
+
+	/* incorrect template*/
+
+
+	
+	$.ajax({
+	    url: "http://localhost:8000/monthlylyreadingslist/",
+	    type: "GET",
+		contentType: 'application/json',
+		data: 'data',
+	    success: function(data) {
+	    						for(var item = 0; item < data.length; item++ ){
+	    							$("ul").append("<li><h3>" + 
+											data[item].fields.device + "</h3><p>" + 
+											data[item].fields.cost + "</p><p>" + 
+											data[item].fields.kWh + "</p></li>"
+											);
+	    							};
+								},
+	});
+};
+
+openWeekly();
+</script>
+{% endblock %}

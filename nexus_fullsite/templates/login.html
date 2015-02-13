@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>User API Key: <span></span></h2>
+
+	<form action="#" id="login_form">
+		<label for="username">User Name</label>
+		<input type="text" name="username" value="" id="username" /><br/><br/>
+		<label for="password">Password</label>
+		<input type="password" name="password" value="" id="password" /><br/><br/>
+		<input type="submit" value="login" />
+	</form>
+	<div id="api_key">
+		<button onclick="delete_cookie('username','api_key')">Delete Cookie</button>
+	</div>
+<script>
+
+$("#login_form").submit(function(event) {
+
+				event.preventDefault();
+
+				var $form = $(this);
+				var f_data = JSON.stringify({
+					"username": $form.find("input[name='username']").val(),
+					"password": $form.find("input[name='password']").val(),
+				});
+
+				$.ajax({
+					url: "http://localhost:8000/accounts/auth/",
+					type: 'POST',
+  					dataType: "json",
+  					contentType: "application/json",
+		        	data: f_data,
+		        	success: function(data) {
+		        		/*if (data instanceof String || typeof data == "string"){*/
+		        			/*$("h2 span").text(data.api_key);*/
+		        			setCookie("api_key", data.api_key, 365);
+		        			setCookie("username", data.username, 365);
+		        		/*}*/
+		        	},
+				});
+			checkCookie();
+			});
+
+	checkCookie();
+
+</script>
+
+{% endblock %}

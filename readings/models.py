@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 
 
 class Device(models.Model):
-	user = models.ForeignKey(User, related_name = "devices")
+	user = models.OneToOneField(User, unique=True, primary_key=True, related_name="device")
 	device_identifier = models.CharField(max_length= 16)
 
 	class Meta():
@@ -25,7 +25,7 @@ class CurrentReading(models.Model):
 		verbose_name = 'current_reading'
 
 	def __unicode__(self):
-		return self.created_at.strftime('%Y-%m-%d %I:%M%p')
+		return u"%s for %s" % (self.time.strftime('%Y-%m-%d %I:%M%p'), self.device)
 
 
 class HourlyReading(models.Model):
@@ -34,12 +34,13 @@ class HourlyReading(models.Model):
 	cost  = models.DecimalField(max_digits=6, decimal_places=4)
 	created_at= models.DateTimeField(auto_now_add=True)
 	time = models.DateTimeField('time period')
+	#device_name = device_identifier
 
 	class Meta():
 		verbose_name = 'hourly_reading'
 
 	def __unicode__(self):
-		return self.created_at.strftime('%Y-%m-%d %I:%M%p')
+		return u"%s for %s" % (self.time.strftime('%Y-%m-%d %I:%M%p'), self.device)
 
 
 class DailyReading(models.Model):
@@ -53,7 +54,7 @@ class DailyReading(models.Model):
 		verbose_name = 'daily_reading'
 
 	def __unicode__(self):
-		return self.created_at.strftime('%Y-%m-%d')
+		return self.time.strftime('%Y-%m-%d')
 
 
 class MonthlyReading(models.Model):
@@ -67,4 +68,4 @@ class MonthlyReading(models.Model):
 		verbose_name = 'monthly_reading'
 
 	def __unicode__(self):
-		return self.created_at.strftime('%Y-%m-%d')
+		return self.time.strftime('%Y-%m-%d')
